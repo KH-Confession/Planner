@@ -5,14 +5,40 @@
  $(window).ready(function () {
    requestPlanList()
 
- })
    // 이벤트
+   $("#save").on("click", requestCreatePlan);
    $("#plannersEle").on("click", ".detailPlan", getDetailList);
    $("#endDateASC").on("click", function () { sortBy("endDate", "ASC") });
    $("#endDateDESC").on("click", function () { sortBy("endDate", "DESC") });
    $("#startDateASC").on("click", function () { sortBy("startDate", "ASC") });
    $("#startDateDESC").on("click", function () { sortBy("startDate", "DESC") });
  })
+
+ function requestCreatePlan() {
+ let title = $("#title").val();
+  let startDate = $("#startDate").val() ?? todayDate;
+  let endDate = $("#endDate").val() ?? todayDate;
+  let remindAlarmDate = $("#remindAlarmDate").val();
+
+  let requestBody = {
+    "title": title,
+    "startDate": startDate,
+    "endDate": endDate,
+    "remindAlarmDate": remindAlarmDate
+  }
+
+  $.ajax({
+    url: "/plans",
+    type: "POST",
+    data: requestBody,
+    success: function () {
+      location.reload();
+    },
+    error: function (xhr) {
+      console.log(xhr)
+    }
+  })
+}
 
 function sortBy(targetData, order) {
   let planListDiv = $("#plannersEle");

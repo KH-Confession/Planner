@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.json.JSONObject;
 
-@WebFilter(value = {"/details", "/detail/*"})
+@WebFilter(value = {"/details", "/detail/*", "/plans"})
 public class SessionFilter implements Filter {
 
   @Override

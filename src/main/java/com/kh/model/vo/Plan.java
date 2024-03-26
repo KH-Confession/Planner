@@ -1,6 +1,7 @@
 package com.kh.model.vo;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +49,36 @@ public class Plan {
         .remindAlarmDate(Date.valueOf(req.getParameter("remindAlarmDate")))
         .complete(String.valueOf(req.getParameter("complete")))
         .createDate(Date.valueOf("create_date"))
+        .build();
+  }
+
+  public static Plan postRequestDto(HttpServletRequest req, Object user)
+      throws NullPointerException, IllegalArgumentException {
+    String title = req.getParameter("title");
+    Date startDate = Date.valueOf(req.getParameter("startDate"));
+    Date endDate = Date.valueOf(req.getParameter("endDate"));
+    Date remindAlarmDate = req.getParameter("remindAlarmDate").isEmpty() ? null
+        : Date.valueOf(req.getParameter("remindAlarmDate"));
+
+    if (title == null || title.isEmpty()) {
+      throw new ValidationException("invalid title");
+    }
+    if (startDate.after(endDate)) {
+      throw new ValidationException("invalid start/end date");
+    }
+
+    if (remindAlarmDate != null
+        && (remindAlarmDate.before(startDate) || remindAlarmDate.after(endDate))) {
+      throw new ValidationException("invalid alarm date");
+    }
+
+    return Plan.builder()
+        .writer(String.valueOf(user))
+        .title(title)
+        .startDate(startDate)
+        .endDate(endDate)
+        .remindAlarmDate(remindAlarmDate)
+        .complete("N")
         .build();
   }
 }
