@@ -1,6 +1,3 @@
-$(window).ready(function () {
-  requestPlanList()
-})
  const today = new Date();
  const todayDate = today.getFullYear() + '-'
    + String(today.getMonth() + 1).padStart(2, '0') + '-'
@@ -9,7 +6,33 @@ $(window).ready(function () {
    requestPlanList()
 
  })
+   // 이벤트
+   $("#plannersEle").on("click", ".detailPlan", getDetailList);
+   $("#endDateASC").on("click", function () { sortBy("endDate", "ASC") });
+   $("#endDateDESC").on("click", function () { sortBy("endDate", "DESC") });
+   $("#startDateASC").on("click", function () { sortBy("startDate", "ASC") });
+   $("#startDateDESC").on("click", function () { sortBy("startDate", "DESC") });
+ })
 
+function sortBy(targetData, order) {
+  let planListDiv = $("#plannersEle");
+  let li = planListDiv.children();
+  let planList = [];
+  $(li).each(function () {
+    planList.push($(this).find("strong").data("plan"));
+  })
+  console.log(planList);
+
+  planList.sort(function (a, b) {
+    let targetDataA = a[targetData];
+    let targetDataB = b[targetData];
+    let timeA = new Date(targetDataA).getTime()
+    let timeB = new Date(targetDataB).getTime()
+
+    return order === "ASC" ? timeA - timeB : timeB - timeA;
+  })
+  renderPlanList(planList);
+}
 
 function requestPlanList() {
   $.ajax({
@@ -32,8 +55,7 @@ function renderMainPage(response) {
   renderCompletePlan(response.planList);
   renderDateInput();
   renderPlanList(response.planList);
-
-  planList.on("click", ".detailPlan", getDetailList)
+  sortBy("endDate", "ASC");
 }
 
 function renderMyInfo(nickname) {
