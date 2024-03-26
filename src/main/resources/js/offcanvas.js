@@ -38,7 +38,7 @@ function renderPlanSection(plan) {
   $("#planTitle").val(plan.title);
   $("#planStartDate").val(plan.startDate);
   $("#planEndDate").val(plan.endDate);
-  $("#planRemindAlarm").val(`${plan.remindAlarmDate === null ? '' : plan.remindAlarmDate}`);
+  $("#planRemindAlarm").val(plan.remindAlarmDate ?? '');
   $("#detailCreateCollapse").removeClass("show")
   $("#detailCreateCollapseButton").text("디테일 추가");
   $("#createErrorMessage").empty();
@@ -110,7 +110,7 @@ function accordionBody(detail) {
             <div class="row justify-content-end">
               <div class="col-9">
                 <input class="form-control-plaintext updateInput" type="datetime-local" 
-                  value="${detail.remindAlarmTime??""}"/>
+                  value="${detail.remindAlarmTime ?? ""}"/>
               </div>
             </div>
           </div>

@@ -1,6 +1,15 @@
 $(window).ready(function () {
   requestPlanList()
 })
+ const today = new Date();
+ const todayDate = today.getFullYear() + '-'
+   + String(today.getMonth() + 1).padStart(2, '0') + '-'
+   + String(today.getDate()).padStart(2, '0')
+ $(window).ready(function () {
+   requestPlanList()
+
+ })
+
 
 function requestPlanList() {
   $.ajax({
@@ -19,10 +28,9 @@ function requestPlanList() {
 }
 
 function renderMainPage(response) {
-  let planList = $("#plannersEle");
   renderMyInfo(response.nickname);
   renderCompletePlan(response.planList);
-  renderCreateForm();
+  renderDateInput();
   renderPlanList(response.planList);
 
   planList.on("click", ".detailPlan", getDetailList)
@@ -36,19 +44,22 @@ function renderCompletePlan(planList) {
   let total = planList.length;
   let completeCount = 0;
   for (let i = 0; i < planList.length; i++) {
-    completeCount += planList[i].complete ? 1 : 0;
+    completeCount += planList[i].complete === 'Y' ? 1 : 0;
   }
   $("#completedPlan").text(completeCount);
   $("#notCompletedPlan").text(Number(total - completeCount));
 }
 
-function renderCreateForm() {
-  let today = new Date();
-  let todayDate = today.getFullYear() + '-'
-    + String(today.getMonth() + 1).padStart(2, '0') + '-'
-    + String(today.getDate()).padStart(2, '0')
-  $("#startDate").val(todayDate);
-  $("#endDate").val(todayDate)
+function renderDateInput() {
+  $("#startDate").attr("min", todayDate).val(todayDate);
+  $("#endDate").attr("min", todayDate).val(todayDate);
+  $("#remindAlarmDateCheck").on("change", function () {
+    let checked = $(this).prop("checked");
+    $("#remindAlarmDate").attr({
+      "readOnly": !checked,
+      "min": todayDate
+    }).val(checked ? todayDate : "");
+  });
 }
 
 function renderPlanList(planList) {

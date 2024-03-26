@@ -150,7 +150,7 @@ main strong {
     align-items: flex-end;
 }
 
-#endAlarmDateBoolean {
+#remindAlarmDateCheck {
     width: 15px;
     margin-right: 5px;
 }
