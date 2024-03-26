@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.json.JSONObject;
 
 @Data
 @ToString
@@ -80,5 +81,17 @@ public class Plan {
         .remindAlarmDate(remindAlarmDate)
         .complete("N")
         .build();
+  }
+
+  public JSONObject responseDto() {
+    JSONObject result = new JSONObject();
+    result.put("planId", this.getPlanId());
+    result.put("title", this.getTitle());
+    result.put("startDate", this.getStartDate());
+    result.put("endDate", this.getEndDate());
+    result.put("remindAlarmDate", this.getRemindAlarmDate());
+    result.put("complete", this.getComplete());
+
+    return result;
   }
 }
