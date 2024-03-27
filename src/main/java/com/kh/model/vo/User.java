@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.json.JSONObject;
 
 @Data
 @AllArgsConstructor
@@ -40,7 +41,7 @@ public class User {
         .build();
   }
 
-  public static User requestDto(HttpServletRequest req) throws NullPointerException, IllegalArgumentException {
+  public static User postRequestDto(HttpServletRequest req) throws NullPointerException, IllegalArgumentException {
     String userId = req.getParameter("userId");
     String userPw = req.getParameter("userPw");
     String userPwConfirm = req.getParameter("userPwConfirm");
@@ -84,5 +85,31 @@ public class User {
 
   public boolean equalsPassword() {
     return this.getUserPw().equals(this.getUserPwConfirm());
+  }
+
+  public User putRequestDto(JSONObject requestBody) {
+    String userPw = requestBody.getString("userPw");
+    String userPwConfirm = requestBody.getString("userPwConfirm");
+    String email = requestBody.getString("email");
+    String phone = requestBody.getString("phone");
+
+    if (!userPw.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()-_=+]).{8,20}$")) {
+      throw new ValidationException("비밀번호는 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해야합니다.");
+    }
+    if (!userPw.equals(userPwConfirm)) {
+      throw new ValidationException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+    }
+    if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+      throw new ValidationException("유효하지 않은 이메일입니다.");
+    }
+    if (!phone.matches("^01[0-9][0-9]{3,4}[0-9]{4}$")) {
+      throw new ValidationException("유효하지 않은 휴대전화번호입니다.");
+    }
+
+    this.setUserPw(userPw);
+    this.setEmail(email);
+    this.setPhone(phone);
+
+    return this;
   }
 }

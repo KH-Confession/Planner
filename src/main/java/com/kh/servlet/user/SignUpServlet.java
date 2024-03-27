@@ -16,7 +16,7 @@ public class SignUpServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     JSONObject responseBody = new JSONObject();
     try {
-      User newUser = User.requestDto(req);
+      User newUser = User.postRequestDto(req);
       new UserDao().save(newUser);
       resp.setStatus(HttpServletResponse.SC_CREATED);
     } catch (Exception e) {

@@ -3,7 +3,7 @@ $(window).ready(function () {
         event.preventDefault();
         let formData = $(this).serialize();
         $.ajax({
-            url: "/user/login",
+            url: "/user/signin",
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
             data: formData,

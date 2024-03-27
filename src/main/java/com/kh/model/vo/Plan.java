@@ -94,4 +94,41 @@ public class Plan {
 
     return result;
   }
+
+  public Plan putRequestDto(JSONObject requestBody) {
+    String updateTitle = requestBody.getString("title");
+    String updateStartDate = requestBody.getString("startDate");
+    String updateEndDate = requestBody.getString("endDate");
+    String updateRemindAlarmDate = requestBody.getString("remindAlarmDate");
+
+    if (updateTitle == null || updateTitle.isEmpty()) {
+      throw new ValidationException("invalid title");
+    }
+
+    if (updateStartDate == null || updateStartDate.isEmpty()
+        || updateEndDate == null || updateEndDate.isEmpty()) {
+      throw new ValidationException("invalid start/end date");
+    }
+
+    if (Date.valueOf(updateStartDate).after(Date.valueOf(updateEndDate))) {
+      throw new ValidationException("invalid start/end date");
+    }
+
+    if (updateRemindAlarmDate == null) {
+      throw new ValidationException("invalid star");
+    }
+    if (!updateRemindAlarmDate.isEmpty()
+        && (Date.valueOf(updateRemindAlarmDate).before(Date.valueOf(updateStartDate))
+        || Date.valueOf(updateRemindAlarmDate).after(Date.valueOf(updateEndDate)))) {
+      throw new ValidationException("invalid remind alarm date");
+    }
+
+    this.setTitle(updateTitle.trim());
+    this.setStartDate(Date.valueOf(updateStartDate));
+    this.setEndDate(Date.valueOf(updateEndDate));
+    this.setRemindAlarmDate(
+        updateRemindAlarmDate.isEmpty() ? null : Date.valueOf(updateRemindAlarmDate));
+
+    return this;
+  }
 }

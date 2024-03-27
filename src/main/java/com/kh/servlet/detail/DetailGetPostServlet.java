@@ -2,7 +2,6 @@ package com.kh.servlet.detail;
 
 import com.kh.model.dao.DetailPlanDao;
 import com.kh.model.vo.DetailPlan;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import org.json.JSONObject;
 
 @WebServlet(urlPatterns = "/details")
 public class DetailGetPostServlet extends HttpServlet {
-
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -29,6 +27,7 @@ public class DetailGetPostServlet extends HttpServlet {
       responseBody.put("detailList", buildJsonArray(details));
       resp.setStatus(HttpServletResponse.SC_OK);
     } catch (NullPointerException | IllegalArgumentException e) {
+      responseBody.put("message", "요청이 잘못 되었습니다.");
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
     resp.getWriter().write(responseBody.toString());
