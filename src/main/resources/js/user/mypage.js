@@ -11,6 +11,7 @@ $(window).ready(function () {
   })
 
   $("#updateSubmitButton").on("click", requestUpdateUser);
+  $("#deleteUserButton").on("click", requestDeleteUser);
 })
 
 function renderInfo(response) {
@@ -42,4 +43,20 @@ function requestUpdateUser() {
       alert(xhr.responseJSON.message);
     }
   })
+}
+
+function requestDeleteUser() {
+  if (confirm("정말 탈퇴하시겠습니까?")) {
+    $.ajax({
+      url: "/user",
+      type: "DELETE",
+      dataType: "json",
+      success: function () {
+        window.location.href = "/index.html";
+      },
+      error: function (xhr) {
+        alert(xhr.responseJSON.message);
+      }
+    })
+  }
 }

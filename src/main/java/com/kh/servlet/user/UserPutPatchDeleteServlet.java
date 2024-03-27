@@ -13,10 +13,10 @@ import java.io.IOException;
 import org.json.JSONObject;
 
 @WebServlet("/user")
-public class UserServlet extends HttpServlet {
+public class UserPutPatchDeleteServlet extends HttpServlet {
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     HttpSession session = req.getSession(false);
     JSONObject responseBody = new JSONObject();
 
@@ -43,7 +43,7 @@ public class UserServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     HttpSession session = req.getSession(false);
     JSONObject responseBody = new JSONObject();
     if (session == null || session.getAttribute("userId") == null) {
@@ -62,6 +62,29 @@ public class UserServlet extends HttpServlet {
       target = target.putRequestDto(requestBody);
 
       new UserDao().updateUserInfo(target);
+      resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    } catch (Exception e) {
+      resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      resp.getWriter().write(new JSONObject().put("message", e.getLocalizedMessage()).toString());
+      resp.getWriter().close();
+    }
+  }
+
+  @Override
+  protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    HttpSession session = req.getSession(false);
+    JSONObject responseBody = new JSONObject();
+    if (session == null || session.getAttribute("userId") == null) {
+      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      responseBody.put("message", "invalid session");
+      resp.getWriter().write(responseBody.toString());
+      resp.getWriter().close();
+      return;
+    }
+    try {
+      new UserDao().deleteByUserId(String.valueOf(session.getAttribute("userId")));
+
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } catch (Exception e) {
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
