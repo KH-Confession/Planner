@@ -20,8 +20,8 @@ public class UserDao {
 
   public int updateUserInfo(User update) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    String query = "UPDATE USERS SET NICKNAME=?, EMAIL=?, PHONE=? WHERE USER_ID=?";
-    return jdbcTemplate.executeUpdate(query, update.getNickname(), update.getEmail(),
+    String query = "UPDATE USERS SET USER_PW=?, EMAIL=?, PHONE=? WHERE USER_ID=?";
+    return jdbcTemplate.executeUpdate(query, update.getUserPw(), update.getEmail(),
         update.getPhone(),
         update.getUserId());
   }
