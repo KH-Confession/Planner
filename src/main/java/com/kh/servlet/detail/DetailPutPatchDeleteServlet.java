@@ -28,6 +28,7 @@ public class DetailPutPatchDeleteServlet extends HttpServlet {
   @Override
   protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     Object user = req.getSession().getAttribute("userId");
+    JSONObject responseBody = new JSONObject();
 
     try {
       String[] parts = req.getRequestURI().split("/");
@@ -42,8 +43,9 @@ public class DetailPutPatchDeleteServlet extends HttpServlet {
 
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } catch (Exception e) {
+      responseBody.put("message", e.getLocalizedMessage());
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      resp.getWriter().write(new JSONObject().put("message", e.getLocalizedMessage()).toString());
+      resp.getWriter().write(responseBody.toString());
       resp.getWriter().close();
     }
   }
@@ -51,6 +53,7 @@ public class DetailPutPatchDeleteServlet extends HttpServlet {
   @Override
   protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     Object user = req.getSession().getAttribute("userId");
+    JSONObject responseBody = new JSONObject();
 
     try {
       String[] parts = req.getRequestURI().split("/");
@@ -64,8 +67,9 @@ public class DetailPutPatchDeleteServlet extends HttpServlet {
 
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } catch (Exception e) {
+      responseBody.put("message", e.getLocalizedMessage());
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      resp.getWriter().write(new JSONObject().put("message", e.getLocalizedMessage()).toString());
+      resp.getWriter().write(responseBody.toString());
       resp.getWriter().close();
     }
   }
@@ -73,6 +77,7 @@ public class DetailPutPatchDeleteServlet extends HttpServlet {
   @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     Object user = req.getSession().getAttribute("userId");
+    JSONObject responseBody = new JSONObject();
 
     try {
       String[] parts = req.getRequestURI().split("/");
@@ -83,8 +88,9 @@ public class DetailPutPatchDeleteServlet extends HttpServlet {
 
       resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     } catch (Exception e) {
+      responseBody.put("message", e.getLocalizedMessage());
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      resp.getWriter().write(new JSONObject().put("message", e.getLocalizedMessage()).toString());
+      resp.getWriter().write(responseBody.toString());
       resp.getWriter().close();
     }
   }

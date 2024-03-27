@@ -11,7 +11,7 @@ function getDetailList() {
     },
     error: function (xhr) {
       if (xhr.status === 401) {
-        alert("로그인이 필요한 페이지 입니다.")
+        alert(xhr.responseJSON.message);
         window.location.href = "/user/signin.html";
       }
     }
@@ -158,10 +158,11 @@ function requestDetailComplete() {
     data: JSON.stringify({ "complete": (complete ? "Y" : "N") }),
     contentType: "application/json",
     type: "patch",
+    dataType: "json",
     success: updateProgress,
     error: function (xhr) {
       if (xhr.status === 401) {
-        alert("로그인이 필요한 페이지 입니다.");
+        alert(xhr.responseJSON.message);
         window.location.href = "/user/signin.html";
       } else {
         replaceWithErrorIcon(formCheckInput);
@@ -191,12 +192,13 @@ function requestUpdateDetail() {
     type: "PUT",
     contentType: "application/json",
     data: JSON.stringify(updateData),
+    dataType: "json",
     success: function () {
       updateAccordionHeader(original, updateData);
     },
     error: function (xhr) {
       if (xhr.status === 401) {
-        alert("로그인이 필요한 페이지 입니다.");
+        alert(xhr.responseJSON.message);
         window.location.href = "/user/signin.html";
       } else {
         replaceWithErrorIcon(formCheckInput);
@@ -247,12 +249,13 @@ function requestDeleteDetail() {
     $.ajax({
       url: `/detail/${detailPlanId}`,
       type: "DELETE",
+      dataType: "json",
       success: function () {
         $(`#detail-${detailPlanId}`).remove();
         updateProgress();
       },
-      error: function () {
-        console.log("error")
+      error: function (xhr) {
+        alert(xhr.responseJSON.message);
       }
     })
   }
@@ -292,6 +295,7 @@ function renderCreateDetailForm() {
   $("#detailEndTime").val(
     String(today.getHours() + 1).padStart(2, '0') + ":" + String(today.getMinutes()).padStart(2, '0')
   );
+  $("#createErrorMessage").empty();
 }
 
 function requestCreateDetail(event) {
@@ -311,11 +315,10 @@ function requestCreateDetail(event) {
     },
     error: function (xhr) {
       if (xhr.status === 401) {
-        alert("로그인이 필요한 페이지 입니다.");
+        alert(xhr.responseJSON.message);
         window.location.href = "/user/signin.html";
       } else if (xhr.status === 400) {
-        response = xhr.responseJSON;
-        $("#createErrorMessage").text(response.message);
+        $("#createErrorMessage").text(xhr.responseJSON.message);
       }
     }
   })
