@@ -55,6 +55,13 @@ public class PlanDao {
     return jdbcTemplate.executeQueryForOne(query, mapper, planId);
   }
 
+  public Plan findByPlanIdAndWriter(int planId, String writer) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    String query = "SELECT * FROM PLAN WHERE PLAN_ID=? AND WRITER=?";
+    RowMapper<Plan> mapper = Plan::from;
+    return jdbcTemplate.executeQueryForOne(query, mapper, planId, writer);
+  }
+
   public List<Plan> findByWriter(String writer) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     String query = "SELECT * FROM PLAN WHERE WRITER = ? ORDER BY END_DATE";

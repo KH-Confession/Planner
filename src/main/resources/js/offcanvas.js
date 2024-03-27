@@ -16,12 +16,41 @@ function getDetailList() {
       }
     }
   });
+
+  $("#planUpdateButton").on("click", function () {
+    let updatePlanTitle = $("#planTitle").val();
+    let updatePlanStartDate = $("#planStartDate").val();
+    let updatePlanEndDate = $("#planEndDate").val();
+    let updatePlanRemindAlarmDate = $("#planRemindAlarm").val();
+
+    let planUpdateForm = {
+      "title": updatePlanTitle,
+      "startDate": updatePlanStartDate,
+      "endDate": updatePlanEndDate,
+      "remindAlarmDate": updatePlanRemindAlarmDate
+    }
+
+    $.ajax({
+      url: `/plan/${plan.planId}`,
+      type: "PUT",
+      data: JSON.stringify(planUpdateForm),
+      dataType: "json",
+      success: function () {
+        console.log("success")
+        location.reload();
+      },
+      error: function (xhr) {
+        $("#planUpdateErrorMessage").text(xhr.responseJSON.message)
+          .fadeIn().fadeOut(5000);
+      }
+    })
+  })
 }
 
 function renderOffcanvas(response, plan) {
   renderPlanSection(plan);
   renderList(response.detailList);
-  renderProgress(response.detailList);
+  renderProgress(plan, response.detailList);
 
   // 이벤트
   $("#detailCreateCollapse").on({
@@ -92,7 +121,7 @@ function accordionBody(detail) {
     <div class="accordion-body p-2">
       <div class="container">
         <div class="row">
-          <textarea class="form-control-plaintext col ps-2 updateInput">${detail.contents.trim()}</textarea>
+          <textarea class="form-control-plaintext col ps-2 updateInput">${detail.contents}</textarea>
           <div class="col-5">
             <div class="row justify-content-center">
               <div class="col-8">
@@ -229,10 +258,14 @@ function requestDeleteDetail() {
   }
 }
 
-function renderProgress(list) {
+function renderProgress(plan, list) {
   let progress = $("#planProgress");
-  if (list.length === 0) {
+  if (list.length === 0 && plan.complete === 'N') {
     progress.css("width", '0%').text('0%');
+    return;
+  } else if (list.length === 0 && plan.complete === 'Y') {
+    progress.css("width", "100%").text("100%");
+    return;
   }
 
   let checkedCount = 0;
