@@ -50,7 +50,7 @@ public class PlanDao {
 
   public List<Plan> findByWriter(String writer) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    String query = "SELECT * FROM PLAN WHERE WRITER = ?";
+    String query = "SELECT * FROM PLAN WHERE WRITER = ? ORDER BY END_DATE";
     RowMapper<Plan> mapper = Plan::from;
     return jdbcTemplate.executeQuery(query, mapper, writer);
   }

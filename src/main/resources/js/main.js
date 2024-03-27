@@ -1,68 +1,25 @@
- const today = new Date();
- const todayDate = today.getFullYear() + '-'
-   + String(today.getMonth() + 1).padStart(2, '0') + '-'
-   + String(today.getDate()).padStart(2, '0')
- $(window).ready(function () {
-   requestPlanList()
+const today = new Date();
+const todayDate = today.getFullYear() + '-'
+  + String(today.getMonth() + 1).padStart(2, '0') + '-'
+  + String(today.getDate()).padStart(2, '0')
 
-   // 이벤트
-   $("#save").on("click", requestCreatePlan);
-   $("#plannersEle").on("click", ".detailPlan", getDetailList);
-   $("#endDateASC").on("click", function () { sortBy("endDate", "ASC") });
-   $("#endDateDESC").on("click", function () { sortBy("endDate", "DESC") });
-   $("#startDateASC").on("click", function () { sortBy("startDate", "ASC") });
-   $("#startDateDESC").on("click", function () { sortBy("startDate", "DESC") });
- })
+$(window).ready(function () {
+  requestPlanList()
 
- function requestCreatePlan() {
- let title = $("#title").val();
-  let startDate = $("#startDate").val() ?? todayDate;
-  let endDate = $("#endDate").val() ?? todayDate;
-  let remindAlarmDate = $("#remindAlarmDate").val();
+  // 이벤트
+  $("#save").on("click", requestCreatePlan);
+  $("#endDateASC").on("click", () => sortBy("endDate", "ASC"));
+  $("#endDateDESC").on("click", () => sortBy("endDate", "DESC"));
+  $("#startDateASC").on("click", () => sortBy("startDate", "ASC"));
+  $("#startDateDESC").on("click", () => sortBy("startDate", "DESC"));
 
-  let requestBody = {
-    "title": title,
-    "startDate": startDate,
-    "endDate": endDate,
-    "remindAlarmDate": remindAlarmDate
-  }
-
-  $.ajax({
-    url: "/plans",
-    type: "POST",
-    data: requestBody,
-    success: function () {
-      location.reload();
-    },
-    error: function (xhr) {
-      console.log(xhr)
-    }
-  })
-}
-
-function sortBy(targetData, order) {
-  let planListDiv = $("#plannersEle");
-  let li = planListDiv.children();
-  let planList = [];
-  $(li).each(function () {
-    planList.push($(this).find("strong").data("plan"));
-  })
-  console.log(planList);
-
-  planList.sort(function (a, b) {
-    let targetDataA = a[targetData];
-    let targetDataB = b[targetData];
-    let timeA = new Date(targetDataA).getTime()
-    let timeB = new Date(targetDataB).getTime()
-
-    return order === "ASC" ? timeA - timeB : timeB - timeA;
-  })
-  renderPlanList(planList);
-}
+  // Offcavans 이벤트
+  $("#plannersEle").on("click", ".detailPlan", getDetailList);
+})
 
 function requestPlanList() {
   $.ajax({
-    url: "/plan/list",
+    url: "/plans",
     type: "GET",
     async: false,
     dataType: "json",
@@ -81,7 +38,6 @@ function renderMainPage(response) {
   renderCompletePlan(response.planList);
   renderDateInput();
   renderPlanList(response.planList);
-  sortBy("endDate", "ASC");
 }
 
 function renderMyInfo(nickname) {
@@ -89,13 +45,12 @@ function renderMyInfo(nickname) {
 }
 
 function renderCompletePlan(planList) {
-  let total = planList.length;
   let completeCount = 0;
   for (let i = 0; i < planList.length; i++) {
     completeCount += planList[i].complete === 'Y' ? 1 : 0;
   }
   $("#completedPlan").text(completeCount);
-  $("#notCompletedPlan").text(Number(total - completeCount));
+  $("#notCompletedPlan").text(Number(planList.length - completeCount));
 }
 
 function renderDateInput() {
@@ -141,6 +96,59 @@ function renderPlanList(planList) {
       )
     )
   })
+}
+
+function requestCreatePlan() {
+  let title = $("#title").val();
+  let startDate = $("#startDate").val() ?? todayDate;
+  let endDate = $("#endDate").val() ?? todayDate;
+  let remindAlarmDate = $("#remindAlarmDate").val();
+
+  let requestBody = {
+    "title": title,
+    "startDate": startDate,
+    "endDate": endDate,
+    "remindAlarmDate": remindAlarmDate
+  }
+
+  $.ajax({
+    url: "/plans",
+    type: "POST",
+    data: requestBody,
+    dataType: "json",
+    success: function () {
+      location.reload();
+    },
+    error: function (xhr) {
+      console.log(xhr)
+      if (xhr.status === 401) {
+        alert("로그인이 필요한 페이지 입니다.");
+        window.location = "user/login.html";
+      } else if (xhr.status === 400) {
+        alert(xhr.responseJSON.message);
+      }
+    }
+  })
+}
+
+function sortBy(targetData, order) {
+  let planListDiv = $("#plannersEle");
+  let li = planListDiv.children();
+  let planList = [];
+  $(li).each(function () {
+    planList.push($(this).find("strong").data("plan"));
+  })
+  console.log(planList);
+
+  planList.sort(function (a, b) {
+    let targetDataA = a[targetData];
+    let targetDataB = b[targetData];
+    let timeA = new Date(targetDataA).getTime()
+    let timeB = new Date(targetDataB).getTime()
+
+    return order === "ASC" ? timeA - timeB : timeB - timeA;
+  })
+  renderPlanList(planList);
 }
 
 function completePlanner(planId) {
