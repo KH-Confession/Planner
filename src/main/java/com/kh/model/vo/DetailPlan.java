@@ -69,7 +69,7 @@ public class DetailPlan {
 
     Plan parent = new PlanDao().findByPlanId(Integer.parseInt(planId));
     LocalDateTime planStartDate = parent.getStartDate().toLocalDate().atStartOfDay();
-    LocalDateTime planEndDate = parent.getEndDate().toLocalDate().atStartOfDay();
+    LocalDateTime planEndDate = parent.getEndDate().toLocalDate().plusDays(1).atStartOfDay();
 
     if (newDetail.getStartTime().isBefore(planStartDate) || newDetail.getStartTime().isAfter(planEndDate)) {
       throw new ValidationException("invalid start date");
