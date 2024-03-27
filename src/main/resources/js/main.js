@@ -8,6 +8,7 @@ $(window).ready(function () {
 
   // 이벤트
   $("#save").on("click", requestCreatePlan);
+  $("#logout").on("click", requestLogOut);
   $("#endDateASC").on("click", () => sortBy("endDate", "ASC"));
   $("#endDateDESC").on("click", () => sortBy("endDate", "DESC"));
   $("#startDateASC").on("click", () => sortBy("startDate", "ASC"));
@@ -16,6 +17,14 @@ $(window).ready(function () {
   // Offcavans 이벤트
   $("#plannersEle").on("click", ".detailPlan", getDetailList);
 })
+function requestLogOut() {
+  $.ajax({
+    url: "/user/logout",
+    success: function () {
+      window.location.href = "/index.html" },
+    error: function () { alert("invalid error") }
+  })
+}
 
 function requestPlanList() {
   $.ajax({
