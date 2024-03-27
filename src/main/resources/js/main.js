@@ -27,7 +27,7 @@ function requestPlanList() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지입니다.")
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       }
     }
   })
@@ -123,7 +123,7 @@ function requestCreatePlan() {
       console.log(xhr)
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location = "user/login.html";
+        window.location = "/user/signin.html";
       } else if (xhr.status === 400) {
         alert(xhr.responseJSON.message);
       }
@@ -166,7 +166,7 @@ function requestComplete(planId) {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else {
         alert("invalid error");
         location.reload();
@@ -187,7 +187,7 @@ function requestDelete(planId) {
       error: function (xhr) {
         if (xhr.status === 401) {
           alert("로그인이 필요한 페이지 입니다.");
-          window.location.href = "user/login.html";
+          window.location.href = "/user/signin.html";
         } else {
           alert("invalid error");
           location.reload();

@@ -12,7 +12,7 @@ function getDetailList() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.")
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       }
     }
   });
@@ -133,7 +133,7 @@ function requestDetailComplete() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else {
         replaceWithErrorIcon(formCheckInput);
       }
@@ -168,7 +168,7 @@ function requestUpdateDetail() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else {
         replaceWithErrorIcon(formCheckInput);
       }
@@ -279,7 +279,7 @@ function requestCreateDetail(event) {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else if (xhr.status === 400) {
         response = xhr.responseJSON;
         $("#createErrorMessage").text(response.message);
