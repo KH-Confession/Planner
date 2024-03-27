@@ -55,6 +55,13 @@ public class UserDao {
     return jdbcTemplate.executeQueryForOne(query, mapper, userId);
   }
 
+  public User findByUserNameAndPhone(String userName, String phone) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    RowMapper<User> mapper = User::from;
+    String query = "SELECT * FROM USERS WHERE USER_NAME=? AND PHONE=?";
+    return jdbcTemplate.executeQueryForOne(query, mapper, userName, phone);
+  }
+
   public User findByNickname(String nickname) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     RowMapper<User> mapper = User::from;
