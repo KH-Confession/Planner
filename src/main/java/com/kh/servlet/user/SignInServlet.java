@@ -9,12 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/user/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/user/signin")
+public class SignInServlet extends HttpServlet {
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
     String userId = req.getParameter("userId");
     String userPw = req.getParameter("userPw");
 
@@ -24,7 +23,7 @@ public class LoginServlet extends HttpServlet {
       session.setAttribute("userId", userId);
       resp.setStatus(HttpServletResponse.SC_OK);
     } catch (IllegalArgumentException e) {
-      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
   }
 }

@@ -9,19 +9,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.json.JSONObject;
 
-@WebServlet("/user/signup")
-public class SignUpServlet extends HttpServlet {
+@WebServlet("/user/find/id")
+public class FindUserIdServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    String userName = req.getParameter("userName");
+    String phone = req.getParameter("phone");
+
+    User target = new UserDao().findByUserNameAndPhone(userName, phone);
     JSONObject responseBody = new JSONObject();
-    try {
-      User newUser = User.requestDto(req);
-      new UserDao().save(newUser);
-      resp.setStatus(HttpServletResponse.SC_CREATED);
-    } catch (Exception e) {
-      responseBody.put("message", e.getLocalizedMessage());
+
+    if (target == null) {
+      responseBody.put("message", "등록 되지 않은 회원입니다.");
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    } else {
+      responseBody.put("message", String.format("%s님의 아이디는 %s입니다.", userName, target.getUserId()));
+      resp.setStatus(HttpServletResponse.SC_OK);
     }
     resp.getWriter().write(responseBody.toString());
     resp.getWriter().close();

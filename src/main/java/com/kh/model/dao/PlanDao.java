@@ -28,6 +28,13 @@ public class PlanDao {
         update.getPlanId());
   }
 
+  public int updateCompleteByPlanIdAndWriter(String complete, int planId, String writer) {
+    JdbcTemplate jdbctemplate = new JdbcTemplate();
+    String query = "UPDATE PLAN SET COMPLETE = ? WHERE PLAN_ID = ? AND WRITER = ?";
+
+    return jdbctemplate.executeUpdate(query, complete, planId, writer);
+  }
+
   public int deleteByPlanIdAndWriter(int planId, String writer) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     String query = "DELETE FROM PLAN WHERE (PLAN_ID=? AND WRITER=?)";
@@ -50,7 +57,7 @@ public class PlanDao {
 
   public List<Plan> findByWriter(String writer) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    String query = "SELECT * FROM PLAN WHERE WRITER = ?";
+    String query = "SELECT * FROM PLAN WHERE WRITER = ? ORDER BY END_DATE";
     RowMapper<Plan> mapper = Plan::from;
     return jdbcTemplate.executeQuery(query, mapper, writer);
   }

@@ -12,7 +12,7 @@ function getDetailList() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.")
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       }
     }
   });
@@ -38,7 +38,7 @@ function renderPlanSection(plan) {
   $("#planTitle").val(plan.title);
   $("#planStartDate").val(plan.startDate);
   $("#planEndDate").val(plan.endDate);
-  $("#planRemindAlarm").val(`${plan.remindAlarmDate === null ? '' : plan.remindAlarmDate}`);
+  $("#planRemindAlarm").val(plan.remindAlarmDate ?? '');
   $("#detailCreateCollapse").removeClass("show")
   $("#detailCreateCollapseButton").text("디테일 추가");
   $("#createErrorMessage").empty();
@@ -57,7 +57,7 @@ function appendOneToList(detail) {
   accordionItem.append(accordionBody(detail))
   $("#detailList").append(accordionItem);
 
-  accordionItem.on("change", ".form-check-input", requestComplete);
+  accordionItem.on("change", ".form-check-input", requestDetailComplete);
   accordionItem.on("click", `#detailDeleteButton-${detail.detailPlanId}`, requestDeleteDetail);
   accordionItem.on("hide.bs.collapse", requestUpdateDetail);
 }
@@ -110,7 +110,7 @@ function accordionBody(detail) {
             <div class="row justify-content-end">
               <div class="col-9">
                 <input class="form-control-plaintext updateInput" type="datetime-local" 
-                  value="${detail.remindAlarmTime??""}"/>
+                  value="${detail.remindAlarmTime ?? ""}"/>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ function accordionBody(detail) {
   </div>`
 }
 
-function requestComplete() {
+function requestDetailComplete() {
   let formCheckInput = $(this);
   let complete = $(formCheckInput).prop("checked");
   let detailPlanId = $(formCheckInput).parents(".accordion-item").attr("id").split("-")[1];
@@ -133,7 +133,7 @@ function requestComplete() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else {
         replaceWithErrorIcon(formCheckInput);
       }
@@ -168,7 +168,7 @@ function requestUpdateDetail() {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else {
         replaceWithErrorIcon(formCheckInput);
       }
@@ -279,7 +279,7 @@ function requestCreateDetail(event) {
     error: function (xhr) {
       if (xhr.status === 401) {
         alert("로그인이 필요한 페이지 입니다.");
-        window.location.href = "user/login.html";
+        window.location.href = "/user/signin.html";
       } else if (xhr.status === 400) {
         response = xhr.responseJSON;
         $("#createErrorMessage").text(response.message);
