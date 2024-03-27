@@ -3,13 +3,10 @@ package com.kh.servlet.plan;
 import com.kh.model.dao.PlanDao;
 import com.kh.model.dao.UserDao;
 import com.kh.model.vo.Plan;
-import com.kh.model.vo.User;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import org.json.JSONArray;
@@ -25,7 +22,7 @@ public class PlanGetPostServlet extends HttpServlet {
 
     try {
       String nickname = new UserDao().findByUserId(String.valueOf(user)).getNickname();
-      List<Plan> plans = new PlanDao().findByWriter(String.valueOf(user));
+      List<Plan> plans = new PlanDao().findByWriterOrderByEndDate(String.valueOf(user));
       responseBody.put("nickname", nickname);
       responseBody.put("planList", buildJsonArray(plans));
 
