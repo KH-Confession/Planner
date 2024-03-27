@@ -57,7 +57,7 @@ function appendOneToList(detail) {
   accordionItem.append(accordionBody(detail))
   $("#detailList").append(accordionItem);
 
-  accordionItem.on("change", ".form-check-input", requestComplete);
+  accordionItem.on("change", ".form-check-input", requestDetailComplete);
   accordionItem.on("click", `#detailDeleteButton-${detail.detailPlanId}`, requestDeleteDetail);
   accordionItem.on("hide.bs.collapse", requestUpdateDetail);
 }
@@ -120,7 +120,7 @@ function accordionBody(detail) {
   </div>`
 }
 
-function requestComplete() {
+function requestDetailComplete() {
   let formCheckInput = $(this);
   let complete = $(formCheckInput).prop("checked");
   let detailPlanId = $(formCheckInput).parents(".accordion-item").attr("id").split("-")[1];

@@ -70,15 +70,15 @@ function renderPlanList(planList) {
   target.empty();
   $.each(planList, function (index, plan) {
     target.append(
-      $("<li>").append(
+      $("<li>").attr("id", `plan-${plan.planId}`).append(
         $("<div>").addClass("plannerItem").append(
           $("<div style='display: flex'>").append(
             $("<input>").prop({
               "type": "checkbox",
               "name": "complete",
               "class": "comRadio",
-              "onchange": `completePlanner(${plan.planId})`
             }).attr(`${plan.complete === 'Y' ? "checked" : "notChecked"}`, "true")
+              .on("change", () => requestComplete(plan.planId))
           ).append(
             $("<strong>").addClass("detailPlan")
               .attr({
@@ -91,7 +91,7 @@ function renderPlanList(planList) {
         ).append(
           $("<div class='plannerDate'>").append($("<span>").text(plan.endDate))
         ).append(
-          $("<span class='deleteButton'>").on("click", deletePlanner(plan.planId)).append("<b>X</b>")
+          $("<span class='deleteButton'>").on("click", () => requestDelete(plan.planId)).append("<b>X</b>")
         )
       )
     )
@@ -146,30 +146,55 @@ function sortBy(targetData, order) {
     let timeA = new Date(targetDataA).getTime()
     let timeB = new Date(targetDataB).getTime()
 
-    return order === "ASC" ? timeA - timeB : timeB - timeA;
+    return timeA === timeB ? a["planId"] - b["planId"]
+      : order === "ASC" ? timeA - timeB : timeB - timeA;
   })
   renderPlanList(planList);
 }
 
-function completePlanner(planId) {
-  /*
-  ajax로 update api 호출해서 complete 수정
-      성공시 반영
-          title에 취소줄 반영, class="plan-complete" 이용
-          완료할 작업 수 / 완료한 작업수 반영, id=notCompletedPlan / id=completedPlan 이용
-      실패시 오류메세지
-  */
+function requestComplete(planId) {
+  let formCheckInput = $(`#plan-${planId} .comRadio`);
+  let complete = $(formCheckInput).prop("checked");
+  $.ajax({
+    url: `/plan/${planId}`,
+    type: "PATCH",
+    data: JSON.stringify({ "complete": (complete ? "Y" : "N") }),
+    contentType: "application/json",
+    success: function () {
+      location.reload()
+    },
+    error: function (xhr) {
+      if (xhr.status === 401) {
+        alert("로그인이 필요한 페이지 입니다.");
+        window.location.href = "user/login.html";
+      } else {
+        alert("invalid error");
+        location.reload();
+      }
+    }
+  })
 
 }
 
-function deletePlanner(planId) {
-  /*
-  ㄹㅇ 삭제할건지 물어보고
-  ajax로 delete api 호출해서 Plan 삭제
-      성공시 반영
-          단순히 main.html 페이지 reload
-      실패시 오류메세지
-  */
+function requestDelete(planId) {
+  if (confirm("정말 삭제하시겠습니까?")) {
+    $.ajax({
+      url: `/plan/${planId}`,
+      type: "DELETE",
+      success: function () {
+        location.reload();
+      },
+      error: function (xhr) {
+        if (xhr.status === 401) {
+          alert("로그인이 필요한 페이지 입니다.");
+          window.location.href = "user/login.html";
+        } else {
+          alert("invalid error");
+          location.reload();
+        }
+      }
+    })
+  }
 }
 
 function moveToDetailPage() {

@@ -28,6 +28,13 @@ public class PlanDao {
         update.getPlanId());
   }
 
+  public int updateCompleteByPlanIdAndWriter(String complete, int planId, String writer) {
+    JdbcTemplate jdbctemplate = new JdbcTemplate();
+    String query = "UPDATE PLAN SET COMPLETE = ? WHERE PLAN_ID = ? AND WRITER = ?";
+
+    return jdbctemplate.executeUpdate(query, complete, planId, writer);
+  }
+
   public int deleteByPlanIdAndWriter(int planId, String writer) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     String query = "DELETE FROM PLAN WHERE (PLAN_ID=? AND WRITER=?)";

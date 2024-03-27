@@ -199,3 +199,8 @@ main strong {
     margin-right: 10px;
     margin-left: -10px;
 }
+
+.comRadio:checked+strong {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
